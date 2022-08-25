@@ -1,1 +1,1 @@
-web: gunicorn minnyatdev.wsgi
+web: gunicorn Minnyatdev.wsgi
