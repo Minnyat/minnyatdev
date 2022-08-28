@@ -12,6 +12,7 @@ def getChatId(request):
     response.writelines(Bot.getIdGroup())
     return response
 def sendLog(request):
+    response = HttpResponse()
     textRequest = ''
     if request.method == 'POST':
         try:
@@ -19,28 +20,27 @@ def sendLog(request):
                 print(str(key).title())
                 textRequest += '*{}*:  {} \n '.format(key.title(), request.POST[key])
         except Exception:
-            raise HttpResponseBadRequest
+            textRequest = "None"
     if request.method == 'GET':
         try:
             for key in request.GET:
                 print(str(key).title())
                 textRequest += '*{}*:  {} \n '.format(key.title(), request.GET[key])
         except Exception:
-            raise HttpResponseBadRequest
-    
-    
-    Bot = Telegram(tokenSpoUpgradeBot)
+            textRequest = "None"
+    if textRequest != '':
+        Bot = Telegram(tokenSpoUpgradeBot)
 
-    timeZone = requests.get("http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh").json()
-    textSend = '{} \n Log: \n {}'.format(timeZone['datetime'],textRequest)
-    textSend = urllib.parse.quote(textSend, safe='')
+        timeZone = requests.get("http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh").json()
+        textSend = '{} \n Log: \n {}'.format(timeZone['datetime'],textRequest)
+        textSend = urllib.parse.quote(textSend, safe='')
 
-    result = Bot.sendText(id = idGroupsendLog, 
-        text = textSend, 
-        markdown = True
-    )
-
-    response = HttpResponse()
+        result = Bot.sendText(id = idGroupsendLog, 
+            text = textSend, 
+            markdown = True
+        )
+    else:
+        textRequest = "None"
     response.writelines(textRequest)
     return response
 
